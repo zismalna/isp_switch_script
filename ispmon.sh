@@ -18,7 +18,7 @@ Help() {
 }
 
 # Get the options
-while getopts "hst" option; do
+while getopts "hstane" option; do
     case $option in
     h) # display Help
         Help
@@ -39,6 +39,15 @@ while getopts "hst" option; do
         secondary_iface=$iface_1
         primary_isp_name=TeNet
         secondary_isp_name=Sana
+        ;;
+    a) # systemd service hack
+        /bin/true
+        ;;
+    n) # systemd service hack
+        /bin/true
+        ;;
+    e) # systemd service hack
+        /bin/true
         ;;
     \?)
         echo "Invalid option"
