@@ -72,9 +72,10 @@ if [ "$(/sbin/ip route show | grep -c $testhost)" != 0 ]; then
 fi
 
 # Switch default route to primary ISP immediately upon call so we don't have to wait
-
-/sbin/ip route delete default && /sbin/ip route add default via "$primary_gw" dev $primary_iface
-add_nameservers
+if ping $testhost -c 1 -q -W 1; then
+    /sbin/ip route delete default && /sbin/ip route add default via "$primary_gw" dev $primary_iface
+    add_nameservers
+fi
 
 while true; do
 
