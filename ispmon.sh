@@ -67,18 +67,19 @@ add_nameservers() {
 
 # Clean up dangling route in case script is killed or fails
 testhost=8.8.8.8
-if [ $(/sbin/ip route show | grep -c $testhost) != 0 ]; then
+if [ "$(/sbin/ip route show | grep -c $testhost)" != 0 ]; then
     /sbin/ip route del $testhost
 fi
 
+# Switch default route to primary ISP immediately upon call so we don't have to wait
+
+/sbin/ip route delete default && /sbin/ip route add default via "$primary_gw" dev $primary_iface
+add_nameservers
+
 while true; do
 
-    # adding test-route via primary gateway
-
-    /sbin/ip route add $testhost via "$primary_gw" dev $primary_iface
-
     # check for 'route add' return code
-    if [ $? = 0 ]; then
+    if /sbin/ip route add $testhost via "$primary_gw" dev $primary_iface; then
         # pinging test-host
         isalive=$(ping -c 40 -q $testhost | grep -oP '\d+(?=% packet loss)')
     else
